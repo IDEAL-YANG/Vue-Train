@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>跟着官方使用Computed和Watcher</title>
+	<script src=".././vue.js"></script>
+</head>
+<body>
+
+	<div id="example" align="center">
+		<p>开始 message 是："{{ message }}"</p>
+		<p>计算翻转后 message 是："{{ reversedMessage }}"</p>
+		<p>通过method翻转后 message 是："{{ reversedMessageByMethod() }}"</p>
+		<p>
+			<input type="text" name="" v-model="message">
+		</p>
+
+		<hr>
+		<p>
+			<div>{{ fullName }}</div>
+		</p>
+		<p>
+			<input type="text" name="" v-model="firstName"><br>
+			<input type="text" name="" v-model="lastName"><br>
+			<input type="text" name="" v-model="fullName">
+		</p>
+
+		<hr>
+
+		<p>
+			问一个答案是yes/no的问题：
+			<input type="text" name="" v-model="question">
+			<p>{{ answer }}</p>
+			<p><img :src="ansImageUrl"></p>
+		</p>
+
+		<hr>
+		<p>
+			<a :href="pageUrl">Next Page</a>
+		</p>
+
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: "#example",
+			data: {
+				message: "Welcome!",
+				firstName: 'Foo',
+				lastName: 'Bar',
+				// fullName: 'Foo Bar',
+				question: '',
+				answer: '你要先提出问题，我才能给你答案！',
+				ansImageUrl: '',
+				pageUrl: './useClassAndStyle.html'
+			},
+			computed: {
+				reversedMessage: function () {
+					return this.message.split('').reverse().join('')
+				},
+				// fullName: function () {
+				// 	return this.firstName + ' ' + this.lastName
+				// }
+				fullName: {
+					get: function () {
+						return this.firstName + ' ' + this.lastName
+					},
+					set: function (newValue) {
+						var names = newValue.split(' ')
+						this.firstName = names[0]
+						this.lastName = names[names.length - 1]
+					}
+				}
+			},
+			methods: {
+				reversedMessageByMethod: function () {
+					return this.message.split('').reverse().join('')
+				},
+				getAnswer: function () {
+					if (this.question.indexOf('？') === -1) {
+						this.answer = '问题需要包含一个中文问好。;-)'
+						return
+					}
+					this.answer = '思考中🤔...'
+					var vm = this
+					axios.get('https://yesno.wtf/api').then(function (response) {
+						vm.answer = _.capitalize(response.data.answer)
+						vm.ansImageUrl = response.data.image
+					}).catch(function (error) {
+						vm.answer = '错误！API无法处理。' + error
+					})
+				}
+			},
+			watch: {
+				// firstName: function (val) {
+				// 	this.fullName = val + ' ' + this.lastName
+				// },
+				// lastName: function (val) {
+				// 	this.fullName = this.firstName + ' ' + val
+				// },
+				question: function (newQuestion, oldQuestion) {
+					this.answer = "等待输入停止。。。"
+					this.debouncedGetAnswer()
+				}
+			},
+			created: function () {
+				this.debouncedGetAnswer = _.debounce(this.getAnswer, 500)
+			}
+		})
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>跟着官网学列表渲染</title>
+	<script type="text/javascript" src=".././vue.js"></script>
+</head>
+<body>
+	<div id="ListDemo" align="center">
+		<li v-for="item in items" :key="item.id">
+			{{ item.message }}
+		</li>
+		<hr>
+		<li v-for="(item,index) of items">
+			{{ parentMessage }} - {{ index }} - {{ item.message }}
+		</li>
+		<button @click="clickAddNewItem">添加一项</button>
+		<hr>
+		<li v-for="value in object">
+			{{ value }}
+		</li>
+		<hr>
+		<li v-for="(value, key) of object">
+			{{ key }}: {{ value }}
+		</li>
+		<hr>
+		<li v-for="(value, key, index) of object">
+			{{ index }}. {{ key }}: {{ value }}
+		</li>
+		<button @click="clickAddNewProperty">添加一个属性</button>
+
+		<hr>
+		<li v-for="n in evenNumbers">
+			{{ n }}
+		</li>
+
+		<hr>
+		<li v-for="n in even(numbers)">
+			{{ n }}
+		</li>
+
+		<hr>
+		<div>
+			<span v-for="n in 10">{{ n }}</span>
+		</div>
+
+		<hr>
+		<ul>
+			<template v-for="item in items">
+				<li>{{ item.message }}</li>
+				<li class="divider" role="presentation">
+			</template>
+		</ul>
+
+		<hr>
+		<li v-for="todo in todos" v-if="!todo.isComplete" :key="todo.id">
+			{{ todo }}
+		</li>
+
+		<hr>
+		<ul v-if="todos.length">
+			<li v-for="todo in todos">
+				{{ todo }}
+			</li>
+		</ul>
+		<p v-else>No todos left!</p>
+
+		<p>
+			<a :href="url">Next</a>
+		</p>
+	</div>
+
+	<script type="text/javascript">
+		var data = {
+			url: './use',
+			items:[
+				{message: 'Foo',id: 0},
+				{message: 'Bar',id: 1}
+			],
+			parentMessage: 'Parent',
+			object: {
+				firstName: 'John',
+				lastName: 'Doe',
+				age: 30
+			},
+			numbers: [1,2,3,4,5],
+			todos: [
+				{isComplete: true, id: 1001},
+				{isComplete: false, id: 1002},
+				{isComplete: false, id: 1003}
+			]
+		}
+		var vm = new Vue({
+			el: "#ListDemo",
+			data: data,
+			methods: {
+				clickAddNewItem: function () {
+					// this.items.splice(this.items.length,1,{message:'Hank' + this.items.length,id: this.items.length})
+					Vue.set(this.items,this.items.length,{message:'Hank' + this.items.length,id: this.items.length})
+				},
+				clickAddNewProperty: function () {
+					if (this.object.sex != null) {
+						return
+					}
+					// Vue.set(this.object, 'sex', 'Man')
+					this.object = Object.assign({},this.object,{
+						sex: 'Man'
+					})
+				},
+				even: function (numbers) {
+					return numbers.filter(function (number) {
+						return number % 2 === 0
+					})
+				}
+			},
+			computed: {
+				evenNumbers: function () {
+					return this.numbers.filter(function (number) {
+						return number % 2 === 0
+					})
+				}
+			},
+		}) 
+	</script>
+</body>
+</html>

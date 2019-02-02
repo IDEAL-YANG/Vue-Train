@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>跟着官方学Class和Style绑定</title>
+	<script type="text/javascript" src=".././vue.js"></script>
+</head>
+<body>
+
+	<div id="example" align="center">
+		<div :class="[activeClass,errorClass]"></div>
+		<div :style="{ display: ['-webkit-box','-ms-flexbox','flex'] }"></div>
+		<hr>
+		<h1 v-if="true">Yes</h1>
+		<h2 v-else>No</h2>
+		<hr>
+		<template v-if="true">
+			<h1>标题</h1>
+			<p>段落</p>
+			<p>段落2</p>
+		</template>
+		<hr>
+		<div v-if="Math.random() > 0.5">你现在可以看到我</div>
+		<div v-else>现在看不到我</div>
+		<hr>
+		<template v-if="loginType === 'username'">
+			<label>用户名</label>
+			<input type="text" name="" placeholder="请输入用户名" key='username-input'>
+		</template>
+		<template v-else>
+			<label>邮箱</label>
+			<input type="text" name="" placeholder="请输入邮箱" key='email-input'>
+		</template><br>
+		<button @click="toggleLoginType">切换登录类型</button>
+
+		<h1 v-show='true'>Hello!</h1>
+
+		<p>
+			<a :href="url">Next！！！</a>
+		</p>
+
+	</div>
+
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '#example',
+			data: {
+				activeClass: 'active',
+				errorClass: 'text-danger',
+				loginType: 'username',
+				url: './useListRender.html'
+			},
+			methods: {
+				toggleLoginType: function () {
+					return this.loginType = this.loginType === 'username' ? 'email' : 'username'
+				}
+			}
+		})
+	</script>
+
+</body>
+</html>

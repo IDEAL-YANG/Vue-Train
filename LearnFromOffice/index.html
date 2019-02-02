@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>跟着官方有肉吃！</title>
+	<script src=".././vue.js"></script>
+</head>
+<body>
+	<div id="app" align="center">
+		<p>{{ message }}</p>
+		<button v-on:click="message = 'baz'">点我修改</button>
+
+		<p>
+			<span v-once title="是不是傻了？">这里使用v-once，值永远不变：{{ message }}</span>
+		</p>
+
+		<p>使用花括号语法：{{ rawHtml }}</p>
+		<p>使用v-html指令:<span v-html="rawHtml" title="隐藏的标题哟！"></span></p>
+		
+		<p>
+			<div v-bind:id="divId">我是绑了div Id的</div>
+		</p>
+
+		<p v-if="seen">Now you see me</p>
+
+		<button v-bind:disabled="isButtonDisabled">Button</button>
+
+		<p>
+			<a v-bind:href="url">Click Me!</a>
+		</p>
+		
+		<p>
+			<a v-on:click="doSomething">点我调用函数</a>
+		</p>
+
+	</div>
+
+	<script>
+		var obj = {
+			message: 'Hello, vue!',
+			rawHtml: '<div style="color:red">This should be red</div>',
+			isButtonDisabled: false,
+			divId: 110,
+			seen: true,
+			url: './useComputedAndWatcher.html'
+		}
+		// Object.freeze(obj)
+		var app = new Vue({
+		  el: '#app',
+		  data: obj,
+		  created: function(){
+		  	console.log('message is: ' + this.message)
+		  }
+		})
+
+		app.$watch('message', function(newValue,oldValue){
+			console.log('message is: ' + this.message)
+		})
+
+	</script>
+
+</body>
+</html>
