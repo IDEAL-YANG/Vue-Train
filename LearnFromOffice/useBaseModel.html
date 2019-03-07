@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>基础组件</title>
+	<script type="text/javascript" src=".././vue.js"></script>
+</head>
+<body>
+
+	<div id="component-demo" align="center">
+		<button-counter></button-counter>
+		<button-counter></button-counter>
+		<button-counter></button-counter>
+		
+		<hr>
+		<blog-post title="我的Vue旅程"></blog-post>
+		<blog-post title="用Vue写博客"></blog-post>
+		<blog-post title="Vue如此有趣"></blog-post>
+
+		<hr>
+		<blog-post v-for="post in posts" v-bind:key="post.id" v-bind:title="post.title" v-bind:content="post.content" v-bind:published-at="post.publishedAt" v-bind:comments="post.comments"></blog-post>
+
+		<hr>
+		<label>看不下去了，重构一下</label><br>
+		<blog-post-refact v-for='post in posts' v-bind:key='post.id+3' v-bind:post='post'></blog-post-refact>
+	</div>
+
+	<hr>
+		<div id="blog-posts-events-demo">
+		  <div :style="{ fontSize: postFontSize + 'em' }">
+		    <blog-post-refact-event
+		      v-for="post in posts"
+		      v-bind:key="post.id"
+		      v-bind:post="post"
+		      v-on:enlarge-text="onEnlargeText">
+		    </blog-post-refact-event>
+		  </div>
+  	<hr>
+			<custom-input v-model="searchText"></custom-input><br>
+			<label>{{ searchText }}</label><br>
+			<alert-box>哈哈啊哈哈</alert-box>
+		</div>
+
+
+	<script type="text/javascript">
+		
+		Vue.component('button-counter', {
+			data: function() {
+				return {
+					count: 0
+				}
+			},
+			template: '<button v-on:click="count++">你点击了{{ count }}次</button>'
+		})
+
+		Vue.component('blog-post',{
+			// props中的值是 会自动忽略大小写的，所以不要使用大写字母
+			props:['title','content','published-at','comments'],
+			template: `<div class="blog-post">
+						<h3>{{ title }}</h3>
+						<div v-html="content"></div><br>
+						<div >{{ publishedAt }}</div><br>
+						<div v-html="comments"></div>
+					</div>`
+		})
+
+		Vue.component('blog-post-refact',{
+			props:['post'],
+			template: '<div class="blog-post-refact">\
+						<h3>{{ post.title }}</h3>\
+						<div v-html="post.content"></div><br>\
+						<div >{{ post.publishedAt }}</div><br>\
+						<div v-html="post.comments"></div>\
+					</div>'
+		})
+
+		Vue.component('blog-post-refact-event',{
+			props:['post'],
+			template: '<div class="blog-post-refact">\
+						<h3>{{ post.title }}</h3>\
+						<button v-on:click="$emit(\'enlarge-text\', 0.1)">放大文本</button>\
+						<div v-html="post.content"></div><br>\
+						<div >{{ post.publishedAt }}</div><br>\
+						<div v-html="post.comments"></div>\
+					</div>'
+		})
+
+		Vue.component('custom-input',{
+			props: ['value'],
+			template: `
+				<input 
+					v-bind:value="value"
+					v-on:input="$emit('input',$event.target.value)">
+			`
+		})
+
+		Vue.component('alert-box', {
+			  template: `
+			    <div class="demo-alert-box">
+			      <strong>Error!</strong>
+			      <slot></slot>
+			    </div>
+			  `
+			})
+
+		new Vue({
+			el: '#component-demo',
+			data: {
+				posts: [
+					{ id:1, title:'我的Vue旅程', content:'是吗？', publishedAt:'2小时前',comments:'不错哟'},
+					{ id:2, title:'用Vue写博客', content:'好的', publishedAt:'5小时前',comments:'我不信你'},
+					{ id:3, title:'Vue如此有趣', content:'嗯', publishedAt:'9小时前',comments:'作者瞎说的'},
+				],
+				postFontSize: 1
+			}
+		})
+
+		new Vue({
+			el: '#blog-posts-events-demo',
+			data: {
+				posts: [
+					{ id:1, title:'我的Vue旅程', content:'是吗？', publishedAt:'2小时前',comments:'不错哟'},
+					{ id:2, title:'用Vue写博客', content:'好的', publishedAt:'5小时前',comments:'我不信你'},
+					{ id:3, title:'Vue如此有趣', content:'嗯', publishedAt:'9小时前',comments:'作者瞎说的'},
+				],
+				postFontSize: 1,
+				searchText: 'hao'
+			},
+			methods: {
+				onEnlargeText: function (enargeAmount) {
+					this.postFontSize += enargeAmount
+				}
+			}
+		})
+
+	</script>
+
+</body>
+</html>
